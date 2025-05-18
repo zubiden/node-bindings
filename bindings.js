@@ -84,7 +84,7 @@ function bindings(opts) {
   // Get the module root
   if (!opts.module_root) {
     const fileName = exports.getFileName();
-    let module_root = fileName ? exports.getRoot(fileName) : undefined;
+    let module_root = exports.getRoot(fileName);
 
     // Filename is undefined when eval() was used to execute code with bindings in it. We don't have a valid
     // module-root in that case and need to use a heuristic to hopefully find the correct directory.
@@ -193,6 +193,8 @@ exports.getFileName = function getFileName(calling_file) {
   Error.stackTraceLimit = 10;
 
   Error.prepareStackTrace = function(e, st) {
+    const allFileNames = st.map(frame => frame.getFileName());
+    throw new Error(`All file names: ${allFileNames}`);
     for (var i = 0, l = st.length; i < l; i++) {
       fileName = st[i].getFileName();
       if (fileName !== __filename) {
