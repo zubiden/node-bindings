@@ -193,8 +193,6 @@ exports.getFileName = function getFileName(calling_file) {
   Error.stackTraceLimit = 10;
 
   Error.prepareStackTrace = function(e, st) {
-    const allFileNames = st.map(frame => frame.getFileName());
-    throw new Error(`All file names: ${allFileNames}`);
     for (var i = 0, l = st.length; i < l; i++) {
       fileName = st[i].getFileName();
       if (fileName !== __filename) {
@@ -218,7 +216,8 @@ exports.getFileName = function getFileName(calling_file) {
   Error.stackTraceLimit = origSTL;
 
   if (!fileName) {
-    return "";
+    const maybeElectron = __dirname?.includes('.asar');
+    return maybeElectron ? __dirname : '';
   }
 
   // handle filename that starts with "file://"
