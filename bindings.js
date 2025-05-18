@@ -84,7 +84,7 @@ function bindings(opts) {
   // Get the module root
   if (!opts.module_root) {
     const fileName = exports.getFileName();
-    let module_root = exports.getRoot(fileName);
+    let module_root = fileName ? exports.getRoot(fileName) : undefined;
 
     // Filename is undefined when eval() was used to execute code with bindings in it. We don't have a valid
     // module-root in that case and need to use a heuristic to hopefully find the correct directory.
@@ -245,7 +245,6 @@ exports.getRoot = function getRoot(file) {
   var dir = dirname(file),
     prev;
 
-  let seenFiles = "";
   while (true) {
     if (dir === '.') {
       // Avoids an infinite loop in rare cases, like the REPL
@@ -261,10 +260,10 @@ exports.getRoot = function getRoot(file) {
     if (prev === dir) {
       // Got to the top
       throw new Error(
-        `Could not find module root given file: ${file}. Checked ${seenFiles}\nDo you have a \`package.json\` file? `
+        `Could not find module root given file: ${file}. Do you have a \`package.json\` file? `
       );
     }
-    seenFiles += `\n${fs.readdirSync(dir)}`;
+
     // Try the parent dir next
     prev = dir;
     dir = join(dir, '..');
