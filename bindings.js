@@ -244,6 +244,8 @@ function noop(input) {
 exports.getRoot = function getRoot(file) {
   var dir = dirname(file),
     prev;
+
+  let seenFiles = "";
   while (true) {
     if (dir === '.') {
       // Avoids an infinite loop in rare cases, like the REPL
@@ -259,9 +261,10 @@ exports.getRoot = function getRoot(file) {
     if (prev === dir) {
       // Got to the top
       throw new Error(
-        `Could not find module root given file: ${file}. Checked up to ${dir}. Do you have a \`package.json\` file? `
+        `Could not find module root given file: ${file}. Checked ${seenFiles}\nDo you have a \`package.json\` file? `
       );
     }
+    seenFiles += `\n${fs.readdirSync(dir)}`;
     // Try the parent dir next
     prev = dir;
     dir = join(dir, '..');
