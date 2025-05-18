@@ -259,9 +259,7 @@ exports.getRoot = function getRoot(file) {
     if (prev === dir) {
       // Got to the top
       throw new Error(
-        'Could not find module root given file: "' +
-          file +
-          '". Do you have a `package.json` file? '
+        `Could not find module root given file: ${file}. Checked up to ${dir}. Do you have a \`package.json\` file? `
       );
     }
     // Try the parent dir next
